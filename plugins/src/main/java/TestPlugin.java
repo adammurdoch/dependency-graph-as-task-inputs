@@ -1,6 +1,5 @@
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.result.ArtifactResult;
 import org.gradle.api.artifacts.result.ResolvedArtifactResult;
 import org.gradle.api.provider.Provider;
 
@@ -14,7 +13,11 @@ public class TestPlugin implements Plugin<Project> {
 
         target.getTasks().register("artifacts-report", ReportArtifactMetadataTask.class, t -> {
             Provider<Set<ResolvedArtifactResult>> artifacts = target.getConfigurations().getByName("runtimeClasspath").getIncoming().getArtifacts().getResolvedArtifacts();
-            t.getArtifacts().set(artifacts.map(s -> s.stream().map(ArtifactResult::getId).collect(Collectors.toList())));
+            t.getArtifactIds().set(artifacts.map(s -> s.stream().map(ResolvedArtifactResult::getId).collect(Collectors.toList())));
+            t.getArtifactVariants().set(artifacts.map(s -> s.stream().map(ResolvedArtifactResult::getVariant).collect(Collectors.toList())));
+            t.getArtifactFiles().set(artifacts.map(s -> s.stream().map(a -> {
+                return target.getLayout().getProjectDirectory().file(a.getFile().getAbsolutePath());
+            }).collect(Collectors.toList())));
             t.getOutputFile().set(target.getLayout().getBuildDirectory().file("artifacts.txt"));
         });
     }
