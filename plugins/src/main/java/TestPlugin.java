@@ -1,6 +1,7 @@
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.result.ResolvedArtifactResult;
+import org.gradle.api.artifacts.result.ResolvedComponentResult;
 import org.gradle.api.provider.Provider;
 
 import java.util.Set;
@@ -19,6 +20,12 @@ public class TestPlugin implements Plugin<Project> {
                 return target.getLayout().getProjectDirectory().file(a.getFile().getAbsolutePath());
             }).collect(Collectors.toList())));
             t.getOutputFile().set(target.getLayout().getBuildDirectory().file("artifacts.txt"));
+        });
+
+        target.getTasks().register("graph-report", ReportDependencyGraphTask.class, t -> {
+            Provider<ResolvedComponentResult> rootComponent = target.getConfigurations().getByName("runtimeClasspath").getIncoming().getResolutionResult().getRootComponent();
+            t.getRootComponent().set(rootComponent);
+            t.getOutputFile().set(target.getLayout().getBuildDirectory().file("graph.txt"));
         });
     }
 }
