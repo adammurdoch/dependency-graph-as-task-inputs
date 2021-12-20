@@ -12,7 +12,12 @@ The `plugins/` directory contains a plugin implementation that registers two tas
 dependency graph of the project's runtime classpath, and one that generates a report on the artifacts in the runtime classpath.
 
 The artifact report task (`ReportArtifactMetadataTask`) declares both the artifact metadata and the artifact files as inputs,
-but a task might instead use only the artifact metadata.
+but a task might instead use only the artifact metadata. The plugin uses this [method](https://docs.gradle.org/nightly/javadoc/org/gradle/api/artifacts/ArtifactCollection.html#getResolvedArtifacts--) to lazily connect the runtime classpath 
+artifact meta-data to the report task.
+
+The graph report task (`ReportDependencyGraphTask`) declares the graph as an input. It does not declare the artifacts
+as inputs. The plugin uses this [method](https://docs.gradle.org/nightly/javadoc/org/gradle/api/artifacts/result/ResolutionResult.html#getRootComponent--)
+to lazily wire the runtime classpath dependency graph to the report task. 
 
 This build has configuration caching enabled.
 
