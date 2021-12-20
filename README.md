@@ -1,15 +1,17 @@
 # Dependency graph results as task inputs
 
-This repository contains a Gradle build that demonstrates tasks that use dependency resolution results as inputs
-in a configuration cache compatible way.
+This repository contains a Gradle build that demonstrates how to write tasks that use dependency resolution results as
+inputs using new APIs that are configuration cache compatible.
 
 There are two different kinds of results that can be used by tasks:
 
-- The dependency graph, represented via `ResolvedComponentResult`, which provides access to the components and dependencies in the graph.
-- Artifact metadata, represented via `ResolvedArtifactResult`, which provides access to some details about an artifact in the result.
+- The dependency graph, represented via `ResolvedComponentResult`, which provides access to the components and dependencies between them arranged in a graph.
+- Artifact metadata, represented via `ResolvedArtifactResult`, which provides access to an artifact in the result and some details about it.
 
-The `plugins/` directory contains a plugin implementation that registers two tasks, one that generates a report on the
-dependency graph of the project's runtime classpath, and one that generates a report on the artifacts in the runtime classpath.
+The `plugins/` directory contains a plugin implementation that provides two tasks:
+
+- `artifact-report` that generates a report on the artifacts in the project's runtime classpath.
+- `graph-report` that generates a report on the dependency graph of the runtime classpath.
 
 The artifact report task (`ReportArtifactMetadataTask`) declares both the artifact metadata and the artifact files as inputs,
 but a task might instead use only the artifact metadata. The plugin uses the [ArtifactCollection.getResolvedArtifacts()](https://docs.gradle.org/nightly/javadoc/org/gradle/api/artifacts/ArtifactCollection.html#getResolvedArtifacts--) method to get a lazy `Provider` of the runtime classpath artifact meta-data to connect to the report task.
