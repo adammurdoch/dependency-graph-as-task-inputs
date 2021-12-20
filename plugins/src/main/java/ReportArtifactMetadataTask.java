@@ -45,7 +45,7 @@ public abstract class ReportArtifactMetadataTask extends DefaultTask {
                 writer.println(id.getDisplayName());
                 writer.print("  variant: ");
                 writer.println(variant.getDisplayName());
-                writer.print("  size : ");
+                writer.print("  size: ");
                 writer.println(file.getAsFile().length());
                 writer.println();
             }
